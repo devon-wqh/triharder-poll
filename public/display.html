@@ -31,8 +31,27 @@
       justify-content: center;
     }
 
-    .screen { width: 100%; height: 100%; display: none; }
+    .screen { width: 100%; height: 100%; display: none; position: relative; }
     .screen.active { display: flex; }
+
+    /* Logo — pinned at top-center on open/results screens */
+    .logo-header {
+      position: absolute;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 64px;
+      width: auto;
+      filter: invert(1);
+      mix-blend-mode: screen;
+    }
+
+    /* Logo — large and inline on standby screen */
+    .logo-standby {
+      width: min(300px, 48vw);
+      filter: invert(1);
+      mix-blend-mode: screen;
+    }
 
     /* ── STANDBY ── */
     #standby-screen {
@@ -218,6 +237,7 @@
 
   <!-- STANDBY -->
   <div id="standby-screen" class="screen active">
+    <img src="/logo.png" class="logo-standby" alt="TriHarder Film Festival">
     <div class="standby-sub">A question is coming up...</div>
     <div class="standby-dot-row">
       <div class="standby-dot"></div>
@@ -228,12 +248,14 @@
 
   <!-- OPEN: question + bars only, no QR, no counts -->
   <div id="open-screen" class="screen">
+    <img src="/logo.png" class="logo-header" alt="TriHarder Film Festival">
     <div class="open-question-display" id="open-question-display"></div>
     <div class="live-bars" id="live-bars"></div>
   </div>
 
   <!-- RESULTS -->
   <div id="results-screen" class="screen">
+    <img src="/logo.png" class="logo-header" alt="TriHarder Film Festival">
     <div class="results-heading" id="results-heading"></div>
     <div class="results-bars-display" id="results-bars-display"></div>
     <div class="results-total-display" id="results-total-display"></div>
