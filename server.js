@@ -46,6 +46,7 @@ app.use(express.static('public'));
 
 app.get('/host', (req, res) => res.sendFile('host.html', { root: 'public' }));
 app.get('/join', (req, res) => res.sendFile('join.html', { root: 'public' }));
+app.get('/display', (req, res) => res.sendFile('display.html', { root: 'public' }));
 
 app.get('/api/qr', async (req, res) => {
   const base = process.env.BASE_URL
