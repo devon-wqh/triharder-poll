@@ -42,11 +42,10 @@
       gap: 20px;
     }
 
-    .standby-title {
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: -0.02em;
+    .standby-logo {
+      width: min(320px, 50vw);
+      filter: invert(1);
+      mix-blend-mode: screen;
     }
 
     .standby-sub {
@@ -275,7 +274,7 @@
 
   <!-- STANDBY -->
   <div id="standby-screen" class="screen active">
-    <div class="standby-title">Get Ready to Vote</div>
+    <img src="/logo.png" class="standby-logo" alt="TriHarder Film Festival">
     <div class="standby-sub">A question is coming up...</div>
     <div class="standby-dot-row">
       <div class="standby-dot"></div>
