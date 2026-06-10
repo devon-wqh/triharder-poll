@@ -90,24 +90,58 @@
 
     /* ── OPEN ── */
     #open-screen {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 80px; /* clear the logo header */
+    }
+
+    .open-left {
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 60px 100px;
-      gap: 40px;
+      gap: 20px;
+      padding: 40px;
+      border-right: 1px solid #1e1e35;
+    }
+
+    .scan-label {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .qr-img {
+      width: min(300px, 34vw);
+      height: min(300px, 34vw);
+      border-radius: 16px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .join-url-display {
+      font-size: 0.95rem;
+      color: var(--muted);
+      word-break: break-all;
+      text-align: center;
+      max-width: 300px;
+    }
+
+    .open-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 48px;
+      gap: 24px;
     }
 
     .open-question-display {
-      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
       font-weight: 700;
       line-height: 1.3;
-      text-align: center;
-      max-width: 900px;
     }
 
     .live-bars {
-      width: 100%;
-      max-width: 800px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -246,11 +280,18 @@
     </div>
   </div>
 
-  <!-- OPEN: question + bars only, no QR, no counts -->
+  <!-- OPEN -->
   <div id="open-screen" class="screen">
     <img src="/logo.png" class="logo-header" alt="TriHarder Film Festival">
-    <div class="open-question-display" id="open-question-display"></div>
-    <div class="live-bars" id="live-bars"></div>
+    <div class="open-left">
+      <div class="scan-label">Scan to answer</div>
+      <img id="qr-img" class="qr-img" src="" alt="QR Code">
+      <div class="join-url-display" id="join-url-display"></div>
+    </div>
+    <div class="open-right">
+      <div class="open-question-display" id="open-question-display"></div>
+      <div class="live-bars" id="live-bars"></div>
+    </div>
   </div>
 
   <!-- RESULTS -->
@@ -327,11 +368,19 @@
       showScreen('results-screen');
     }
 
+    async function fetchQR() {
+      const res = await fetch('/api/qr');
+      const { dataURL, url } = await res.json();
+      document.getElementById('qr-img').src = dataURL;
+      document.getElementById('join-url-display').textContent = url;
+    }
+
     socket.on('state_sync', ({ status, question, options, answers, totalVotes }) => {
       if (status === 'open') {
         document.getElementById('open-question-display').textContent = question;
         buildLiveBars(options);
         updateLiveBars(answers, totalVotes);
+        fetchQR();
         showScreen('open-screen');
       } else if (status === 'closed') {
         showResults({ question, options, answers, totalVotes });
@@ -342,6 +391,7 @@
       document.getElementById('open-question-display').textContent = question;
       buildLiveBars(options);
       updateLiveBars(new Array(options.length).fill(0), 0);
+      fetchQR();
       showScreen('open-screen');
     });
 
