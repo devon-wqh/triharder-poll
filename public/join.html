@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Join Poll</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --surface2: #22223b;
+      --text: #f0f0f5;
+      --muted: #8888aa;
+      --accent: #6c63ff;
+      --a: #e74c3c;
+      --b: #3498db;
+      --c: #2ecc71;
+      --d: #f39c12;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .screen { width: 100%; max-width: 480px; display: none; flex-direction: column; align-items: center; }
+    .screen.active { display: flex; }
+
+    /* ── WAITING ── */
+    .pulse-ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(108,99,255,0.15);
+      border: 3px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 24px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.7; }
+    }
+
+    .waiting-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+    .waiting-sub { font-size: 1rem; color: var(--muted); text-align: center; }
+
+    /* ── QUESTION ── */
+    .question-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.4;
+      margin-bottom: 32px;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface);
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 500;
+      text-align: left;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .option-btn:active { transform: scale(0.97); }
+    .option-btn:hover { border-color: rgba(108,99,255,0.5); background: var(--surface2); }
+
+    .option-btn .badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .option-btn.opt-0 .badge { background: var(--a); }
+    .option-btn.opt-1 .badge { background: var(--b); }
+    .option-btn.opt-2 .badge { background: var(--c); }
+    .option-btn.opt-3 .badge { background: var(--d); }
+
+    .option-btn.selected {
+      border-color: currentColor;
+    }
+    .option-btn.opt-0.selected { color: var(--a); }
+    .option-btn.opt-1.selected { color: var(--b); }
+    .option-btn.opt-2.selected { color: var(--c); }
+    .option-btn.opt-3.selected { color: var(--d); }
+
+    .option-btn.dimmed { opacity: 0.4; }
+
+    /* ── SUBMITTED ── */
+    .check-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(46,204,113,0.15);
+      border: 3px solid var(--c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin-bottom: 24px;
+      animation: pop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .submitted-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+    .submitted-sub { font-size: 1rem; color: var(--muted); text-align: center; }
+
+    .dot-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0.3; }
+      40% { opacity: 1; }
+    }
+
+    /* ── RESULTS ── */
+    .results-q {
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .results-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .r-row {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .r-row.my-answer { outline: 2px solid var(--accent); }
+    .r-row.winner { outline: 2px solid; }
+    .r-row.winner.opt-0 { outline-color: var(--a); }
+    .r-row.winner.opt-1 { outline-color: var(--b); }
+    .r-row.winner.opt-2 { outline-color: var(--c); }
+    .r-row.winner.opt-3 { outline-color: var(--d); }
+
+    .r-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .r-row.opt-0 .r-badge { background: var(--a); }
+    .r-row.opt-1 .r-badge { background: var(--b); }
+    .r-row.opt-2 .r-badge { background: var(--c); }
+    .r-row.opt-3 .r-badge { background: var(--d); }
+
+    .r-col { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .r-text { font-size: 0.9rem; font-weight: 500; }
+
+    .r-track {
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .r-fill {
+      height: 100%;
+      border-radius: 4px;
+      width: 0;
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .r-row.opt-0 .r-fill { background: var(--a); }
+    .r-row.opt-1 .r-fill { background: var(--b); }
+    .r-row.opt-2 .r-fill { background: var(--c); }
+    .r-row.opt-3 .r-fill { background: var(--d); }
+
+    .r-pct {
+      font-size: 1rem;
+      font-weight: 700;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .results-meta { font-size: 0.85rem; color: var(--muted); }
+
+    .my-answer-tag {
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- WAITING -->
+  <div id="waiting-screen" class="screen active">
+    <div class="pulse-ring">🗳️</div>
+    <div class="waiting-title">Get Ready!</div>
+    <div class="waiting-sub">A question is coming your way...</div>
+  </div>
+
+  <!-- QUESTION -->
+  <div id="question-screen" class="screen">
+    <div class="question-text" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+  </div>
+
+  <!-- SUBMITTED -->
+  <div id="submitted-screen" class="screen">
+    <div class="check-circle">✓</div>
+    <div class="submitted-title">Answer Recorded!</div>
+    <div class="submitted-sub">Waiting for everyone to finish...</div>
+    <div class="dot-row">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results-screen" class="screen">
+    <div class="results-q" id="results-q"></div>
+    <div class="results-list" id="results-list"></div>
+    <div class="results-meta" id="results-meta"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const LABELS = ['A', 'B', 'C', 'D'];
+    let myAnswer = null;
+    const socket = io();
+
+    const voted = sessionStorage.getItem('voted') === '1';
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function buildQuestion(question, options) {
+      document.getElementById('question-text').textContent = question;
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = options.map((opt, i) => `
+        <button
+          class="option-btn opt-${i}"
+          onclick="vote(${i})"
+          id="opt-btn-${i}"
+        >
+          <div class="badge">${LABELS[i]}</div>
+          <span>${opt}</span>
+        </button>
+      `).join('');
+    }
+
+    function vote(index) {
+      if (sessionStorage.getItem('voted') === '1') return;
+      myAnswer = index;
+      sessionStorage.setItem('voted', '1');
+      sessionStorage.setItem('myAnswer', index);
+      socket.emit('submit_answer', { optionIndex: index });
+
+      // Visual feedback
+      document.querySelectorAll('.option-btn').forEach((btn, i) => {
+        if (i === index) btn.classList.add('selected');
+        else btn.classList.add('dimmed');
+        btn.style.pointerEvents = 'none';
+      });
+
+      setTimeout(() => showScreen('submitted-screen'), 500);
+    }
+
+    function showResults({ question, options, answers, totalVotes }) {
+      myAnswer = parseInt(sessionStorage.getItem('myAnswer') ?? '-1', 10);
+      document.getElementById('results-q').textContent = question;
+      document.getElementById('results-meta').textContent =
+        `${totalVotes} ${totalVotes === 1 ? 'vote' : 'votes'} total`;
+
+      const maxVotes = Math.max(...answers);
+      const winnerIdx = answers.indexOf(maxVotes);
+
+      const list = document.getElementById('results-list');
+      list.innerHTML = options.map((opt, i) => {
+        const pct = totalVotes > 0 ? Math.round(answers[i] / totalVotes * 100) : 0;
+        const isWinner = i === winnerIdx && maxVotes > 0;
+        const isMine = i === myAnswer;
+        return `
+          <div class="r-row opt-${i}${isWinner ? ' winner' : ''}${isMine ? ' my-answer' : ''}">
+            <div class="r-badge">${LABELS[i]}</div>
+            <div class="r-col">
+              <div class="r-text">${opt}${isMine ? ' <span class="my-answer-tag">your pick</span>' : ''}</div>
+              <div class="r-track">
+                <div class="r-fill" data-pct="${pct}" id="rfill-${i}"></div>
+              </div>
+            </div>
+            <div class="r-pct">${pct}%</div>
+          </div>
+        `;
+      }).join('');
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        options.forEach((_, i) => {
+          const fill = document.getElementById(`rfill-${i}`);
+          if (fill) fill.style.width = fill.dataset.pct + '%';
+        });
+      }));
+
+      showScreen('results-screen');
+    }
+
+    // ── SOCKET EVENTS ──
+
+    socket.on('state_sync', ({ status, question, options, answers, totalVotes }) => {
+      if (status === 'open') {
+        if (sessionStorage.getItem('voted') === '1') {
+          showScreen('submitted-screen');
+        } else {
+          buildQuestion(question, options);
+          showScreen('question-screen');
+        }
+      } else if (status === 'closed') {
+        showResults({ question, options, answers, totalVotes });
+      }
+      // status === 'setup' → stay on waiting screen
+    });
+
+    socket.on('poll_started', ({ question, options }) => {
+      sessionStorage.removeItem('voted');
+      sessionStorage.removeItem('myAnswer');
+      myAnswer = null;
+      buildQuestion(question, options);
+      showScreen('question-screen');
+    });
+
+    socket.on('vote_accepted', () => {
+      // Server confirmed — already moved to submitted screen in vote()
+    });
+
+    socket.on('poll_closed', (data) => {
+      showResults(data);
+    });
+
+    socket.on('poll_reset', () => {
+      sessionStorage.removeItem('voted');
+      sessionStorage.removeItem('myAnswer');
+      myAnswer = null;
+      showScreen('waiting-screen');
+    });
+  </script>
+</body>
+</html>
