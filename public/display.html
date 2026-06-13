@@ -18,6 +18,8 @@
       --b: #3498db;
       --c: #2ecc71;
       --d: #f39c12;
+      --e: #9b59b6;
+      --f: #1abc9c;
     }
 
     body {
@@ -176,6 +178,8 @@
     .bar-fill.opt-1 { background: var(--b); }
     .bar-fill.opt-2 { background: var(--c); }
     .bar-fill.opt-3 { background: var(--d); }
+    .bar-fill.opt-4 { background: var(--e); }
+    .bar-fill.opt-5 { background: var(--f); }
 
     /* ── RESULTS ── */
     #results-screen {
@@ -218,6 +222,8 @@
     .r-row.winner.opt-1 { outline-color: var(--b); }
     .r-row.winner.opt-2 { outline-color: var(--c); }
     .r-row.winner.opt-3 { outline-color: var(--d); }
+    .r-row.winner.opt-4 { outline-color: var(--e); }
+    .r-row.winner.opt-5 { outline-color: var(--f); }
 
     .r-badge {
       width: 48px;
@@ -235,6 +241,8 @@
     .r-row.opt-1 .r-badge { background: var(--b); }
     .r-row.opt-2 .r-badge { background: var(--c); }
     .r-row.opt-3 .r-badge { background: var(--d); }
+    .r-row.opt-4 .r-badge { background: var(--e); }
+    .r-row.opt-5 .r-badge { background: var(--f); }
 
     .r-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .r-text { font-size: 1.15rem; font-weight: 600; }
@@ -257,6 +265,8 @@
     .r-row.opt-1 .r-fill { background: var(--b); }
     .r-row.opt-2 .r-fill { background: var(--c); }
     .r-row.opt-3 .r-fill { background: var(--d); }
+    .r-row.opt-4 .r-fill { background: var(--e); }
+    .r-row.opt-5 .r-fill { background: var(--f); }
 
     .r-pct {
       font-size: 1.8rem;
@@ -308,7 +318,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const LABELS = ['A', 'B', 'C', 'D'];
+    const LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
     const socket = io();
 
     function showScreen(id) {

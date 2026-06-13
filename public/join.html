@@ -18,6 +18,8 @@
       --b: #3498db;
       --c: #2ecc71;
       --d: #f39c12;
+      --e: #9b59b6;
+      --f: #1abc9c;
       --radius: 14px;
     }
 
@@ -111,6 +113,8 @@
     .option-btn.opt-1 .badge { background: var(--b); }
     .option-btn.opt-2 .badge { background: var(--c); }
     .option-btn.opt-3 .badge { background: var(--d); }
+    .option-btn.opt-4 .badge { background: var(--e); }
+    .option-btn.opt-5 .badge { background: var(--f); }
 
     .option-btn.selected {
       border-color: currentColor;
@@ -119,6 +123,8 @@
     .option-btn.opt-1.selected { color: var(--b); }
     .option-btn.opt-2.selected { color: var(--c); }
     .option-btn.opt-3.selected { color: var(--d); }
+    .option-btn.opt-4.selected { color: var(--e); }
+    .option-btn.opt-5.selected { color: var(--f); }
 
     .option-btn.dimmed { opacity: 0.4; }
 
@@ -198,6 +204,8 @@
     .r-row.winner.opt-1 { outline-color: var(--b); }
     .r-row.winner.opt-2 { outline-color: var(--c); }
     .r-row.winner.opt-3 { outline-color: var(--d); }
+    .r-row.winner.opt-4 { outline-color: var(--e); }
+    .r-row.winner.opt-5 { outline-color: var(--f); }
 
     .r-badge {
       width: 34px;
@@ -215,6 +223,8 @@
     .r-row.opt-1 .r-badge { background: var(--b); }
     .r-row.opt-2 .r-badge { background: var(--c); }
     .r-row.opt-3 .r-badge { background: var(--d); }
+    .r-row.opt-4 .r-badge { background: var(--e); }
+    .r-row.opt-5 .r-badge { background: var(--f); }
 
     .r-col { flex: 1; display: flex; flex-direction: column; gap: 6px; }
     .r-text { font-size: 0.9rem; font-weight: 500; }
@@ -237,6 +247,8 @@
     .r-row.opt-1 .r-fill { background: var(--b); }
     .r-row.opt-2 .r-fill { background: var(--c); }
     .r-row.opt-3 .r-fill { background: var(--d); }
+    .r-row.opt-4 .r-fill { background: var(--e); }
+    .r-row.opt-5 .r-fill { background: var(--f); }
 
     .r-pct {
       font-size: 1rem;
@@ -292,7 +304,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const LABELS = ['A', 'B', 'C', 'D'];
+    const LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
     let myAnswer = null;
     const socket = io();
 

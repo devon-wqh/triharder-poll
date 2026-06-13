@@ -20,6 +20,8 @@
       --b: #3498db;
       --c: #2ecc71;
       --d: #f39c12;
+      --e: #9b59b6;
+      --f: #1abc9c;
       --radius: 12px;
     }
 
@@ -102,6 +104,8 @@
     .option-row:nth-child(2) .option-badge { background: var(--b); }
     .option-row:nth-child(3) .option-badge { background: var(--c); }
     .option-row:nth-child(4) .option-badge { background: var(--d); }
+    .option-row:nth-child(5) .option-badge { background: var(--e); }
+    .option-row:nth-child(6) .option-badge { background: var(--f); }
 
     .remove-btn {
       background: none;
@@ -231,6 +235,8 @@
     .bar-fill.opt-1 { background: var(--b); }
     .bar-fill.opt-2 { background: var(--c); }
     .bar-fill.opt-3 { background: var(--d); }
+    .bar-fill.opt-4 { background: var(--e); }
+    .bar-fill.opt-5 { background: var(--f); }
 
     .open-footer { width: 100%; margin-top: 20px; }
 
@@ -279,6 +285,8 @@
     .result-row:nth-child(2) .result-badge { background: var(--b); }
     .result-row:nth-child(3) .result-badge { background: var(--c); }
     .result-row:nth-child(4) .result-badge { background: var(--d); }
+    .result-row:nth-child(5) .result-badge { background: var(--e); }
+    .result-row:nth-child(6) .result-badge { background: var(--f); }
 
     .result-text-col { flex: 1; display: flex; flex-direction: column; gap: 6px; }
 
@@ -302,6 +310,8 @@
     .result-row:nth-child(2) .result-fill { background: var(--b); }
     .result-row:nth-child(3) .result-fill { background: var(--c); }
     .result-row:nth-child(4) .result-fill { background: var(--d); }
+    .result-row:nth-child(5) .result-fill { background: var(--e); }
+    .result-row:nth-child(6) .result-fill { background: var(--f); }
 
     .result-winner .result-fill { box-shadow: 0 0 10px currentColor; }
 
@@ -337,7 +347,7 @@
         <textarea id="question-input" rows="3" placeholder="e.g. What is the best recovery drink?"></textarea>
       </div>
       <div class="form-group">
-        <label>Answer Options (2–4)</label>
+        <label>Answer Options (2–6)</label>
         <div class="options-list" id="options-list">
           <div class="option-row">
             <div class="option-badge">A</div>
@@ -387,7 +397,8 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const LABELS = ['A', 'B', 'C', 'D'];
+    const LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const MAX_OPTIONS = 6;
 
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -399,7 +410,7 @@
     function addOption() {
       const list = document.getElementById('options-list');
       const count = list.children.length;
-      if (count >= 4) return;
+      if (count >= MAX_OPTIONS) return;
       const row = document.createElement('div');
       row.className = 'option-row';
       row.innerHTML = `
@@ -408,7 +419,7 @@
         <button class="remove-btn" onclick="removeOption(this)" title="Remove">✕</button>
       `;
       list.appendChild(row);
-      if (count + 1 >= 4) document.getElementById('add-option-btn').style.display = 'none';
+      if (count + 1 >= MAX_OPTIONS) document.getElementById('add-option-btn').style.display = 'none';
     }
 
     function removeOption(btn) {
